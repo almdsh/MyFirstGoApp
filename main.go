@@ -1,37 +1,35 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-
-	"github.com/gorilla/mux"
 )
 
+type LoggingMiddleware struct {
+	handler http.Handler
+}
+
+func NewLoggingMiddleware(handler http.Handler) *LoggingMiddleware {
+	return &LoggingMiddleware{
+		handler: handler,
+	}
+}
+
+func (l *LoggingMiddleware) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	log.Println(req.URL, "requested")
+
+	l.handler.ServeHTTP(w, req)
+}
+
+type Handler struct{}
+
+func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	_, err := w.Write([]byte("hello"))
+	if err != nil {
+		log.Println(err)
+	}
+}
+
 func main() {
-	r := mux.NewRouter()
-	r.HandleFunc("/products/{key}", ProductHandler)
-	r.HandleFunc("/articles/{category}/", ArticlesCategoryHandler)
-	r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
-	http.Handle("/", r)
-
-	// Add these lines
-	fmt.Println("Server is running on http://localhost:8080")
-	log.Println(http.ListenAndServe(":9090", nil))
-}
-
-func ProductHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Key: %v\n", vars["key"])
-}
-func ArticlesCategoryHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Category: %v\n", vars["category"])
-}
-func ArticleHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Category: %v\\%v\n", vars["category"], vars["id"])
+	log.Println(http.ListenAndServe(":9090", NewLoggingMiddleware(&Handler{})))
 }
