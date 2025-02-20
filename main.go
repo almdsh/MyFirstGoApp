@@ -1,35 +1,25 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-type LoggingMiddleware struct {
-	handler http.Handler
-}
-
-func NewLoggingMiddleware(handler http.Handler) *LoggingMiddleware {
-	return &LoggingMiddleware{
-		handler: handler,
-	}
-}
-
-func (l *LoggingMiddleware) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	log.Println(req.URL, "requested")
-
-	l.handler.ServeHTTP(w, req)
-}
-
-type Handler struct{}
-
-func (h *Handler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	_, err := w.Write([]byte("hello"))
-	if err != nil {
-		log.Println(err)
-	}
-}
-
 func main() {
-	log.Println(http.ListenAndServe(":9090", NewLoggingMiddleware(&Handler{})))
+	client := http.Client{}
+
+	resp, err := client.Get("https://golangforall.com/en/")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	buf, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(buf))
+
 }
