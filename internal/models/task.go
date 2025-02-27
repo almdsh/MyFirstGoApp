@@ -1,0 +1,31 @@
+package models
+
+type TaskStatus string
+
+const (
+	StatusNew        TaskStatus = "new"
+	StatusInProgress TaskStatus = "in_progress"
+	StatusDone       TaskStatus = "done"
+	StatusError      TaskStatus = "error"
+)
+
+type Task struct {
+	ID              string            `json:"id"`
+	Method          string            `json:"method"`
+	URL             string            `json:"url"`
+	Headers         map[string]string `json:"headers"`
+	Status          TaskStatus        `json:"status"`
+	HTTPStatusCode  int               `json:"httpStatusCode, omitempty"`
+	ResponseHeaders map[string]string `json:"responseHeaders, omitempty"`
+	Length          int64             `json:"length, omitempty"`
+}
+
+type CreateTaskRequest struct {
+	Method  string            `json:"method"`
+	URL     string            `json:"url"`
+	Headers map[string]string `json:"headers"`
+}
+
+type GetTaskRequest struct {
+	ID string `json:"id"`
+}
