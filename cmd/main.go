@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/almdsh/MyFirstGoApp/internal/server"
+	"MyFirstGoApp/internal/server"
 )
 
 func main() {
