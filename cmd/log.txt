@@ -1,0 +1,103 @@
+2025/03/21 12:49:17 Connection to PostgreSQL database established successfully!
+2025/03/21 12:49:27 Handling tasks
+2025/03/21 12:49:28 Task created successfully with ID 9
+2025/03/21 12:49:28 3-d side answer:  &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[359] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 09:49:28 GMT] Mime-Version:[1.0]] 0xc000120040 359 [] true false map[] 0xc00020e000 <nil>}
+2025/03/21 12:49:45 Handling task with ID 8
+2025/03/21 12:49:45 Task with ID 8 retrieved successfully
+2025/03/21 12:50:02 Handling task with ID 6
+2025/03/21 12:50:02 Task with ID 6 deleted successfully
+2025/03/21 12:50:07 Handling task with ID 6
+2025/03/21 12:50:07 Task with ID 6 deleted successfully
+2025/03/21 12:51:00 Handling task with ID 16
+2025/03/21 12:51:00 Task with ID 16 deleted successfully
+2025/03/21 12:51:18 Handling task with ID 8
+2025/03/21 12:51:18 Task with ID 8 retrieved successfully
+2025/03/21 12:51:21 Handling tasks
+2025/03/21 12:51:21 Tasks retrieved successfully. Count: 3
+2025/03/21 12:51:33 Handling tasks
+2025/03/21 12:51:33 Database cleaned successfully
+2025/03/21 12:51:39 Handling task with ID 16
+2025/03/21 12:51:39 Task with ID 16 deleted successfully
+2025/03/21 12:51:55 Handling tasks
+2025/03/21 12:51:55 Tasks retrieved successfully. Count: 0
+2025/03/21 12:52:04 Handling task with ID 8
+2025/03/21 12:52:04 Task with ID 8 not found
+2025/03/21 12:52:20 Handling tasks
+2025/03/21 12:52:20 Task created successfully with ID 10
+2025/03/21 12:52:23 Handling tasks
+2025/03/21 12:52:23 Task created successfully with ID 11
+2025/03/21 12:52:24 3-d side answer:  &{200 OK 200 HTTP/1.1 1 1 map[Cache-Control:[private, max-age=0] Content-Security-Policy-Report-Only:[object-src 'none';base-uri 'self';script-src 'nonce-b78fHTs1GHte69_Ceq57SA' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp] Content-Type:[text/html; charset=ISO-8859-1] Date:[Fri, 21 Mar 2025 09:52:24 GMT] Expires:[-1] Server:[gws] Set-Cookie:[AEC=AVcja2d0Xf-L5trJ5-vTZQo-zgBaEGFkK8q3Vxiv_AQrQz6ZX_A1d4Oxxw; expires=Wed, 17-Sep-2025 09:52:24 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax] X-Frame-Options:[SAMEORIGIN] X-Xss-Protection:[0]] 0xc000210380 -1 [] false true map[] 0xc00020e7e0 <nil>}
+2025/03/21 12:52:24 3-d side answer:  &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 09:52:24 GMT] Mime-Version:[1.0]] 0xc000088d00 361 [] true false map[] 0xc00014a7e0 <nil>}
+2025/03/21 12:56:52 Connection to PostgreSQL database established successfully!
+2025/03/21 13:59:46 Connection to PostgreSQL database established successfully!
+2025/03/21 13:59:49 Handling task with ID 16
+2025/03/21 14:02:57 Connection to PostgreSQL database established successfully!
+2025/03/21 14:02:59 Handling task with ID 16
+2025/03/21 14:03:16 {0xc0001c0000 0}
+2025/03/21 14:03:47 Task with ID 16 deleted successfully
+2025/03/21 14:04:10 Connection to PostgreSQL database established successfully!
+2025/03/21 14:04:22 Handling tasks
+2025/03/21 14:04:22 Task created successfully with ID 12
+2025/03/21 14:04:23 3-d side answer:  &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 11:04:23 GMT] Mime-Version:[1.0]] 0xc000238280 361 [] true false map[] 0xc00022a000 <nil>}
+2025/03/21 14:04:29 Handling task with ID 12
+2025/03/21 14:04:37 {0xc0001c0000 1}
+2025/03/21 14:37:37 Connection to PostgreSQL database established successfully!
+2025/03/21 14:37:44 Handling tasks
+2025/03/21 14:37:48 Database cleaned successfully
+2025/03/21 14:38:35 Handling task with ID 8
+2025/03/21 14:38:35 Task with ID 8 not found
+2025/03/21 14:38:52 Handling tasks
+2025/03/21 14:38:52 Tasks retrieved successfully. Count: 0
+2025/03/21 14:42:36 Handling task with ID 12
+2025/03/21 14:42:40 {0xc0001c0000 0}
+2025/03/21 14:42:40 Task with ID 12 not found
+2025/03/21 14:42:45 Handling tasks
+2025/03/21 14:42:46 Database cleaned successfully
+2025/03/21 14:44:27 Connection to PostgreSQL database established successfully!
+2025/03/21 14:44:34 Handling tasks
+2025/03/21 14:44:34 Task created successfully with ID 13
+2025/03/21 14:44:42 3-d side answer:  &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 11:44:42 GMT] Mime-Version:[1.0]] 0xc000090c80 361 [] true false map[] 0xc0000b99e0 <nil>}
+2025/03/21 15:36:41 Connection to PostgreSQL database established successfully!
+2025/03/21 15:36:50 Handling tasks
+2025/03/21 15:36:50 Tasks retrieved successfully. Count: 1
+2025/03/21 15:36:58 Handling task with ID 13
+2025/03/21 15:36:58 Task with ID 13 retrieved successfully
+2025/03/21 15:37:09 Handling tasks
+2025/03/21 15:37:10 Database cleaned successfully
+2025/03/21 15:37:14 Handling tasks
+2025/03/21 15:37:14 Task ID 0 status updated to error
+2025/03/21 15:37:14 Task created successfully with ID 14
+2025/03/21 15:37:14 Task ID 14 status updated to in_process
+2025/03/21 15:37:15 Third-party response for task with ID 14: &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 12:37:15 GMT] Mime-Version:[1.0]] 0xc000112c80 361 [] true false map[] 0xc0001539e0 <nil>}
+2025/03/21 15:37:15 Task ID 14 status updated to done
+2025/03/21 15:37:23 Handling task with ID 14
+2025/03/21 15:37:23 Task with ID 14 retrieved successfully
+2025/03/21 15:37:50 Handling task with ID 14
+2025/03/21 15:38:02 Task with ID 14 retrieved successfully
+2025/03/21 15:38:24 Handling tasks
+2025/03/21 15:39:20 Task ID 0 status updated to error
+2025/03/21 15:39:37 Task created successfully with ID 15
+2025/03/21 15:39:46 Task ID 15 status updated to in_process
+2025/03/21 15:39:46 Third-party response for task with ID 15: &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 12:39:46 GMT] Mime-Version:[1.0]] 0xc000314140 361 [] true false map[] 0xc000258480 <nil>}
+2025/03/21 15:39:46 Task ID 15 status updated to done
+2025/03/21 15:39:53 Handling tasks
+2025/03/21 15:39:53 Tasks retrieved successfully. Count: 2
+2025/03/21 15:40:01 Handling task with ID 14
+2025/03/21 15:40:01 Task with ID 14 retrieved successfully
+2025/03/21 15:40:21 Handling tasks
+2025/03/21 15:40:24 Task ID 0 status updated to error
+2025/03/21 15:40:24 Task created successfully with ID 16
+2025/03/21 15:40:33 Task ID 16 status updated to in_process
+2025/03/21 15:41:30 Third-party response for task with ID 16: &{200 OK 200 HTTP/1.1 1 1 map[Cache-Control:[private, max-age=0] Content-Security-Policy-Report-Only:[object-src 'none';base-uri 'self';script-src 'nonce-mZ2ImnRTQph55PaNYDPnPw' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp] Content-Type:[text/html; charset=ISO-8859-1] Date:[Fri, 21 Mar 2025 12:41:07 GMT] Expires:[-1] Server:[gws] Set-Cookie:[AEC=AVcja2efVk4mxRr5u5pxijw5UDAVDUsUSmm0s7sfdyjtCgDKC1mPRdlOQw; expires=Wed, 17-Sep-2025 12:41:07 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax] X-Frame-Options:[SAMEORIGIN] X-Xss-Protection:[0]] 0xc000216480 -1 [] false true map[] 0xc0001f2120 <nil>}
+2025/03/21 15:41:32 Task ID 16 status updated to done
+2025/03/21 15:43:12 Connection to PostgreSQL database established successfully!
+2025/03/21 15:43:14 Handling tasks
+2025/03/21 15:43:14 Tasks retrieved successfully. Count: 3
+2025/03/21 15:43:28 Handling tasks
+2025/03/21 15:43:33 Handling task with ID 16
+2025/03/21 15:43:33 Task ID 0 status updated to new
+2025/03/21 15:43:33 Task with ID 16 retrieved successfully
+2025/03/21 15:43:33 Task created successfully with ID 17
+2025/03/21 15:43:40 Task ID 17 status updated to in_process
+2025/03/21 15:43:41 Third-party response for task with ID 17: &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 12:43:41 GMT] Mime-Version:[1.0]] 0xc0000ba780 361 [] true false map[] 0xc0000b6ea0 <nil>}
+2025/03/21 15:43:41 Task ID 17 status updated to done
