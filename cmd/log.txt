@@ -101,3 +101,11 @@
 2025/03/21 15:43:40 Task ID 17 status updated to in_process
 2025/03/21 15:43:41 Third-party response for task with ID 17: &{403 Forbidden 403 HTTP/1.1 1 1 map[Cache-Control:[max-age=0] Content-Length:[361] Content-Type:[text/html] Date:[Fri, 21 Mar 2025 12:43:41 GMT] Mime-Version:[1.0]] 0xc0000ba780 361 [] true false map[] 0xc0000b6ea0 <nil>}
 2025/03/21 15:43:41 Task ID 17 status updated to done
+2025/04/01 12:23:11 Handling task with ID 16
+2025/04/01 12:23:11 Task with ID 16 retrieved successfully
+2025/04/01 12:23:20 Handling tasks
+2025/04/01 12:23:20 Tasks retrieved successfully. Count: 4
+2025/04/01 12:23:43 Handling task with ID 161
+2025/04/01 12:23:43 Task with ID 161 not found
+2025/04/01 12:23:47 Handling task with ID 16
+2025/04/01 12:23:47 Task with ID 16 retrieved successfully

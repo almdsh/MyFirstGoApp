@@ -163,6 +163,7 @@ func getTaskById(w http.ResponseWriter, id int64, db *sql.DB) {
 
 	log.Printf("Task with ID %d retrieved successfully\n", id)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(task)
 }
 
