@@ -20,7 +20,7 @@ type PostgreSQLConfig struct {
 
 func Run() *sql.DB {
 	config := PostgreSQLConfig{
-		Host:     "localhost",
+		Host:     "db",
 		Port:     "5432",
 		Username: "postgresql",
 		Password: "postgresql",

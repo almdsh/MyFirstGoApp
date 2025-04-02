@@ -27,7 +27,7 @@ func ServerRun() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/tasks", ctx.tasksHandler)
 	mux.HandleFunc("/tasks/{id}", ctx.taskHandler)
-	log.Fatal(http.ListenAndServe("127.0.0.1:8080", mux))
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", mux))
 }
 
 func logSettings() {

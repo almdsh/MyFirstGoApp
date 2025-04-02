@@ -1,26 +1,41 @@
-version: '3'
+version: '3.8'
 services:
   app:
-    build: .
+    build: ./
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       - DB_HOST=db
       - DB_PORT=5432
       - DB_USER=postgresql
       - DB_PASSWORD=postgresql
       - DB_NAME=postgresql
+    networks:
+      - app-network
 
   db:
-    image: postgres
+    restart: always  
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgresql
       - POSTGRES_PASSWORD=postgresql
       - POSTGRES_DB=postgresql
-    volumes:
-      - db-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgresql"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   db-data:

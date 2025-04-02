@@ -30,6 +30,6 @@ func SendTask(db *sql.DB, task *model.Task) {
 		return
 	}
 	defer resp.Body.Close()
-	log.Printf("Third-party response for task with ID %d: %v\n", task.ID, resp)
+	log.Printf("Third-party response for task with ID %d: %v\n", &task.ID, resp)
 	database.UpdateTaskStatus(db, task, model.Done)
 }
