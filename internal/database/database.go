@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/lib/pq"
 )
@@ -18,13 +19,20 @@ type PostgreSQLConfig struct {
 	Database string
 }
 
+func GetEnv(env string, fallback string) string {
+	value := os.Getenv(env)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
+}
 func Run() *sql.DB {
 	config := PostgreSQLConfig{
-		Host:     "db",
-		Port:     "5432",
-		Username: "postgresql",
-		Password: "postgresql",
-		Database: "postgresql",
+		Host:     GetEnv("DB_HOST", "localhost"),
+		Port:     GetEnv("DB_PORT", "5432"),
+		Username: GetEnv("DB_USER", "postgresql"),
+		Password: GetEnv("DB_PASSWORD", "postgresql"),
+		Database: GetEnv("DB_NAME", "postgresql"),
 	}
 
 	db, err := ConnectToDB(config)

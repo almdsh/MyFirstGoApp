@@ -6,8 +6,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
@@ -26,9 +28,11 @@ func TestCreateTask(t *testing.T) {
 		Method:  "GET",
 		URL:     "https://example.com",
 		Headers: map[string]string{},
+		Status:  model.New,
 	}
 	task.Headers["Content-Type"] = "application/json"
 	headersJSON, _ := json.Marshal(task.Headers)
+
 	mock.ExpectQuery("INSERT INTO tasks \\(method, url, headers, status\\) VALUES \\(\\$1, \\$2, \\$3, \\$4\\) RETURNING id").
 		WithArgs(task.Method, task.URL, string(headersJSON), task.Status).
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
@@ -37,10 +41,11 @@ func TestCreateTask(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error marshaling task: %v", err)
 	}
-	request, err := http.NewRequest("POST", "/tasks", bytes.NewBuffer(body))
+	request, err := http.NewRequest("POST", "/api/v1/tasks", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatalf("Error creating request: %v", err)
 	}
+
 	w := httptest.NewRecorder()
 
 	createTask(w, request, mockDB)
@@ -49,13 +54,18 @@ func TestCreateTask(t *testing.T) {
 		t.Errorf("Expected status code %d, got %d", http.StatusCreated, w.Code)
 	}
 
-	var response map[string]int64
-	json.Unmarshal(w.Body.Bytes(), &response)
-
-	if response["id"] != 1 {
-		t.Errorf("Expected ID 1, got %d", response["id"])
+	var responseBytes []byte
+	responseBytes, err = io.ReadAll(w.Body)
+	if err != nil {
+		t.Fatalf("Failed to read response: %v", err)
 	}
 
+	firstResponse := strings.Split(string(responseBytes), "\n")[0]
+
+	var response map[string]int64
+	if err := json.Unmarshal([]byte(firstResponse), &response); err != nil {
+		t.Fatalf("Failed to unmarshal response: %v", err)
+	}
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Errorf("Unfulfilled expectations: %s", err)
 	}

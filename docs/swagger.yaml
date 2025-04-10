@@ -1,0 +1,143 @@
+basePath: /
+host: localhost:8080
+info:
+  contact:
+    email: alim.dyshekov@axxonsoft.dev
+    name: API Support
+  description: This is a sample server Todo server.
+  license:
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Todo Server API
+  version: "1.0"
+paths:
+  /api/v1/task:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new HTTP task
+      parameters:
+      - description: Task object
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+  /api/v1/tasks:
+    delete:
+      description: Deletes all tasks from database
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete all tasks
+    get:
+      description: Returns list of all tasks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+            type: array
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get all tasks
+    post:
+      consumes:
+      - application/json
+      description: Creates a new HTTP task
+      parameters:
+      - description: Task object
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Bad request
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+  /api/v1/tasks/{id}:
+    delete:
+      description: Deletes task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Delete task
+    get:
+      description: Returns single task by ID
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+        "404":
+          description: Task not found
+          schema:
+            type: string
+        "500":
+          description: Internal server error
+          schema:
+            type: string
+      summary: Get task by ID
+swagger: "2.0"
