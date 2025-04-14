@@ -21,18 +21,13 @@ type Task struct {
 	// @Description Task status
 	Status string `json:"status"`
 	// @Description HTTP response
-	Response http.Response `json:"response"`
+	Response ResponseData `json:"response"`
 }
 
 type ResponseData struct {
-	Status           string      `json:"status"`
-	StatusCode       int         `json:"status_code"`
-	Proto            string      `json:"proto"`
-	ProtoMajor       int         `json:"proto_major"`
-	ProtoMinor       int         `json:"proto_minor"`
-	Headers          http.Header `json:"headers"`
-	ContentLength    int64       `json:"content_length"`
-	TransferEncoding []string    `json:"transfer_encoding"`
-	Body             string      `json:"body"`
-	Uncompressed     bool        `json:"uncompressed"`
+	Status        string      `json:"status"`
+	StatusCode    int         `json:"status_code"`
+	Headers       http.Header `json:"headers"`
+	ContentLength int64       `json:"content_length"`
+	Body          string      `json:"body"`
 }

@@ -5,6 +5,7 @@ import (
 	"MyFirstGoApp/internal/model"
 	"bytes"
 	"database/sql"
+	"encoding/json"
 	"io"
 	"log"
 	"net/http"
@@ -34,16 +35,11 @@ func SendTask(db *sql.DB, task *model.Task) (*model.ResponseData, error) {
 	log.Printf("Third-party response for task with ID %d: %v\n", task.ID, resp)
 	database.UpdateTaskStatus(db, task, model.Done)
 
-	responseData := model.ResponseData{
-		Status:           resp.Status,
-		StatusCode:       resp.StatusCode,
-		Proto:            resp.Proto,
-		ProtoMajor:       resp.ProtoMajor,
-		ProtoMinor:       resp.ProtoMinor,
-		Headers:          resp.Header,
-		ContentLength:    resp.ContentLength,
-		TransferEncoding: resp.TransferEncoding,
-		Uncompressed:     resp.Uncompressed,
+	responseData := &model.ResponseData{
+		Status:        resp.Status,
+		StatusCode:    resp.StatusCode,
+		Headers:       resp.Header,
+		ContentLength: resp.ContentLength,
 	}
 
 	body, err := io.ReadAll(resp.Body)
@@ -52,5 +48,11 @@ func SendTask(db *sql.DB, task *model.Task) (*model.ResponseData, error) {
 	}
 	responseData.Body = string(body)
 
-	return &responseData, nil
+	responseJSON, err := json.Marshal(responseData)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = db.Exec("UPDATE tasks SET response = $1 WHERE id = $2", string(responseJSON), task.ID)
+	return responseData, err
 }

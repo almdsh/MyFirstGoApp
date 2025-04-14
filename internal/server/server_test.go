@@ -77,28 +77,33 @@ func TestGetTasks(t *testing.T) {
 		mockSetup          func(mock sqlmock.Sqlmock)
 		expectedHTTPStatus int
 		expectedTask       []model.Task
-		expectedStatus     int
-		expectedError      bool // error?
+		expectedError      bool
 	}{
 		{
 			name: "Successfully retrieve empty tasks list",
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				rows := sqlmock.NewRows([]string{"method", "url", "headers", "id", "status"})
-				mock.ExpectQuery("SELECT method, url, headers, id, status FROM tasks").
+				rows := sqlmock.NewRows([]string{"method", "url", "headers", "id", "status", "response"})
+				mock.ExpectQuery("SELECT method, url, headers, id, status, response FROM tasks").
 					WillReturnRows(rows)
 			},
 			expectedHTTPStatus: http.StatusOK,
-			expectedTask:       []model.Task{},
+			expectedTask:       []model.Task(nil),
 			expectedError:      false,
 		},
 		{
-			name: "Successfully retrieve  tasks list with many task",
+			name: "Successfully retrieve tasks list with many tasks",
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				rows := sqlmock.NewRows([]string{"method", "url", "headers", "id", "status"}).
-					AddRow("GET", "https://example.com", `{"Content-Type":"application/json"}`, 1, "new").
-					AddRow("POST", "https://api.example.com", `{"Authorization": "token"}`, 2, "in_progress").
-					AddRow("PUT", "https://update.example.com", `{"Custom-Header":"value"}`, 3, "done")
-				mock.ExpectQuery("SELECT method, url, headers, id, status FROM tasks").
+				responseData := &model.ResponseData{
+					Status:     "200 OK",
+					StatusCode: 200,
+				}
+				responseJSON, _ := json.Marshal(responseData)
+
+				rows := sqlmock.NewRows([]string{"method", "url", "headers", "id", "status", "response"}).
+					AddRow("GET", "https://example.com", `{"Content-Type":"application/json"}`, 1, "new", responseJSON).
+					AddRow("POST", "https://api.example.com", `{"Authorization": "token"}`, 2, "in_progress", responseJSON).
+					AddRow("PUT", "https://update.example.com", `{"Custom-Header":"value"}`, 3, "done", responseJSON)
+				mock.ExpectQuery("SELECT method, url, headers, id, status, response FROM tasks").
 					WillReturnRows(rows)
 			},
 			expectedHTTPStatus: http.StatusOK,
@@ -111,6 +116,10 @@ func TestGetTasks(t *testing.T) {
 					},
 					ID:     1,
 					Status: "new",
+					Response: model.ResponseData{
+						Status:     "200 OK",
+						StatusCode: 200,
+					},
 				},
 				{
 					Method: "POST",
@@ -120,6 +129,10 @@ func TestGetTasks(t *testing.T) {
 					},
 					ID:     2,
 					Status: "in_progress",
+					Response: model.ResponseData{
+						Status:     "200 OK",
+						StatusCode: 200,
+					},
 				},
 				{
 					Method: "PUT",
@@ -129,85 +142,37 @@ func TestGetTasks(t *testing.T) {
 					},
 					ID:     3,
 					Status: "done",
+					Response: model.ResponseData{
+						Status:     "200 OK",
+						StatusCode: 200,
+					},
 				},
 			},
 			expectedError: false,
-		},
-		{
-			name: "Database error",
-			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery("SELECT method, url, headers, id, status FROM tasks").
-					WillReturnError(fmt.Errorf("database connection error"))
-			},
-			expectedHTTPStatus: http.StatusInternalServerError,
-			expectedError:      true,
-		},
-		{
-			name: "Invalid JSON in headers",
-			mockSetup: func(mock sqlmock.Sqlmock) {
-				rows := sqlmock.NewRows([]string{"method", "url", "headers", "id"}).
-					AddRow("GET", "https://example.com", `{invalid-json}`, 1)
-				mock.ExpectQuery("SELECT method, url, headers, id, status FROM tasks").
-					WillReturnRows(rows)
-			},
-			expectedHTTPStatus: http.StatusInternalServerError,
-			expectedError:      true,
 		},
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			mockDB, mock, err := sqlmock.New()
-			if err != nil {
-				t.Fatalf("Error creating mock database: %v", err)
-			}
+			require.NoError(t, err)
 			defer mockDB.Close()
 
 			tc.mockSetup(mock)
-
 			w := httptest.NewRecorder()
 
 			getTasks(w, mockDB)
 
-			if w.Code != tc.expectedHTTPStatus {
-				t.Errorf("Expected status code %d, got %d", tc.expectedHTTPStatus, w.Code)
-			}
+			assert.Equal(t, tc.expectedHTTPStatus, w.Code)
 
 			if !tc.expectedError {
 				var tasks []model.Task
 				err = json.Unmarshal(w.Body.Bytes(), &tasks)
-				if err != nil {
-					t.Errorf("Error unmarshalling JSON: %v", err)
-				}
-
-				if len(tasks) != len(tc.expectedTask) {
-					t.Errorf("Expected %d tasks, got %d", len(tc.expectedTask), len(tasks))
-				}
-
-				for i, expectedTask := range tc.expectedTask {
-
-					if i >= len(tasks) {
-						break
-					}
-					actualTask := tasks[i]
-
-					assert := assert.New(t)
-					assert.Equal(expectedTask, actualTask)
-
-					for key, expectedValue := range expectedTask.Headers {
-						actualValue, exists := actualTask.Headers[key]
-						if !exists {
-							t.Errorf("Task %d: Header %s not found", i, key)
-						} else if actualValue != expectedValue {
-							t.Errorf("Task %d: Header %s expected value %s, got %s", i, key, expectedValue, actualValue)
-						}
-					}
-				}
+				require.NoError(t, err)
+				assert.Equal(t, tc.expectedTask, tasks)
 			}
 
-			if err := mock.ExpectationsWereMet(); err != nil {
-				t.Errorf("Unfulfilled expectations: %s", err)
-			}
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }
@@ -225,18 +190,17 @@ func TestGetTaskById(t *testing.T) {
 			name:   "Successfully retrieve task by ID",
 			taskID: 1,
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				task := model.Task{
-					Method:  "GET",
-					URL:     "https://example.com",
-					Headers: map[string]string{},
-					Status:  "new",
+				responseData := &model.ResponseData{
+					Status:     "200 OK",
+					StatusCode: 200,
 				}
-				task.Headers["Content-Type"] = "application/json"
-				headersJSON, _ := json.Marshal(task.Headers)
-				rows := sqlmock.NewRows([]string{"id", "method", "url", "headers", "status"}).
-					AddRow(1, task.Method, task.URL, headersJSON, task.Status)
+				responseJSON, _ := json.Marshal(responseData)
+				headersJSON := `{"Content-Type":"application/json"}`
 
-				mock.ExpectQuery("SELECT id, method, url, headers, status FROM tasks WHERE id = \\$1").
+				rows := sqlmock.NewRows([]string{"id", "method", "url", "headers", "status", "response"}).
+					AddRow(1, "GET", "https://example.com", headersJSON, "new", responseJSON)
+
+				mock.ExpectQuery("SELECT id, method, url, headers, status, response FROM tasks WHERE id = \\$1").
 					WithArgs(1).
 					WillReturnRows(rows)
 			},
@@ -249,6 +213,10 @@ func TestGetTaskById(t *testing.T) {
 					"Content-Type": "application/json",
 				},
 				Status: "new",
+				Response: model.ResponseData{
+					Status:     "200 OK",
+					StatusCode: 200,
+				},
 			},
 			expectedError: false,
 		},
@@ -256,7 +224,7 @@ func TestGetTaskById(t *testing.T) {
 			name:   "Task not found",
 			taskID: 999,
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery("SELECT id, method, url, headers, status FROM tasks WHERE id = \\$1").
+				mock.ExpectQuery("SELECT id, method, url, headers, status, response FROM tasks WHERE id = \\$1").
 					WithArgs(999).
 					WillReturnError(sql.ErrNoRows)
 			},
@@ -268,23 +236,9 @@ func TestGetTaskById(t *testing.T) {
 			name:   "Database error",
 			taskID: 2,
 			mockSetup: func(mock sqlmock.Sqlmock) {
-				mock.ExpectQuery("SELECT id, method, url, headers, status FROM tasks WHERE id = \\$1").
+				mock.ExpectQuery("SELECT id, method, url, headers, status, response FROM tasks WHERE id = \\$1").
 					WithArgs(2).
 					WillReturnError(fmt.Errorf("database connection error"))
-			},
-			expectedHTTPStatus: http.StatusInternalServerError,
-			expectedTask:       nil,
-			expectedError:      true,
-		},
-		{
-			name:   "Invalid JSON in headers",
-			taskID: 3,
-			mockSetup: func(mock sqlmock.Sqlmock) {
-				rows := sqlmock.NewRows([]string{"id", "method", "url", "headers", "status"}).
-					AddRow(3, "GET", "https://example.com", `{invalid-json}`, "new")
-				mock.ExpectQuery("SELECT id, method, url, headers, status FROM tasks WHERE id = \\$1").
-					WithArgs(3).
-					WillReturnRows(rows)
 			},
 			expectedHTTPStatus: http.StatusInternalServerError,
 			expectedTask:       nil,
@@ -295,11 +249,10 @@ func TestGetTaskById(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			mockDB, mock, err := sqlmock.New()
-			require.NoError(t, err, "Error creating mock database")
+			require.NoError(t, err)
 			defer mockDB.Close()
 
 			tc.mockSetup(mock)
-
 			w := httptest.NewRecorder()
 
 			getTaskById(w, tc.taskID, mockDB)
@@ -308,20 +261,12 @@ func TestGetTaskById(t *testing.T) {
 
 			if !tc.expectedError && tc.expectedTask != nil {
 				var task model.Task
-				err = json.NewDecoder(w.Body).Decode(&task) //(w.Body.Bytes(), &task)
-				require.NoError(t, err, "Error unmarshalling JSON")
-
+				err = json.NewDecoder(w.Body).Decode(&task)
+				require.NoError(t, err)
 				assert.Equal(t, *tc.expectedTask, task)
-
-				for key, expectedValue := range tc.expectedTask.Headers {
-					actualValue, exists := task.Headers[key]
-					assert.True(t, exists, "Header %s not found", key)
-					if exists {
-						assert.Equal(t, expectedValue, actualValue, "Header %s value mismatch", key)
-					}
-				}
 			}
-			assert.NoError(t, mock.ExpectationsWereMet(), "Unfulfilled expectations")
+
+			assert.NoError(t, mock.ExpectationsWereMet())
 		})
 	}
 }

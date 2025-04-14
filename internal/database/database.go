@@ -69,43 +69,39 @@ func ConnectToDB(config PostgreSQLConfig) (*sql.DB, error) {
 
 func CreateTable(db *sql.DB) error {
 	_, err := db.Exec(`
-		CREATE TABLE IF NOT EXISTS tasks (
-			id SERIAL PRIMARY KEY,
-			method VARCHAR(10),
-			url VARCHAR(255),
-			headers JSONB,
-			status VARCHAR(20),
-			http_status_code INTEGER,
-			response_headers JSONB,
-			content_length INTEGER
-		);
-	`)
+        DROP TABLE IF EXISTS tasks CASCADE;
+    `)
+	_, err = db.Exec(`
+        CREATE TABLE IF NOT EXISTS tasks (
+            id SERIAL PRIMARY KEY,
+            method VARCHAR(10),
+            url VARCHAR(255),
+            headers JSONB,
+            status VARCHAR(20),
+            response JSONB
+        );
+    `)
 	return err
 }
 
 func AddTask(db *sql.DB, task model.Task) (id int64, err error) {
-	headersJSON, err1 := json.Marshal(task.Headers)
-	if err1 != nil {
-		return 0, err1
-	}
-	headersJSONStr := string(headersJSON)
-
-	row := db.QueryRow(`
-	INSERT INTO tasks (method, url, headers, status)
-	VALUES ($1, $2, $3, $4)
-	RETURNING id;
-`, task.Method, task.URL, headersJSONStr, task.Status)
-
-	err = row.Scan(&id)
+	headersJSON, err := json.Marshal(task.Headers)
 	if err != nil {
 		return 0, err
 	}
 
-	return id, nil
+	row := db.QueryRow(`
+    INSERT INTO tasks (method, url, headers, status)
+    VALUES ($1, $2, $3, $4)
+    RETURNING id;
+    `, task.Method, task.URL, string(headersJSON), task.Status)
+
+	err = row.Scan(&id)
+	return id, err
 }
 
 func GetAllTasks(db *sql.DB) ([]model.Task, error) {
-	rows, err := db.Query("SELECT method, url, headers, id, status FROM tasks")
+	rows, err := db.Query("SELECT method, url, headers, id, status, response FROM tasks")
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +111,8 @@ func GetAllTasks(db *sql.DB) ([]model.Task, error) {
 	for rows.Next() {
 		var task model.Task
 		var headers sql.NullString
-		err = rows.Scan(&task.Method, &task.URL, &headers, &task.ID, &task.Status)
+		var responseJSON sql.NullString
+		err = rows.Scan(&task.Method, &task.URL, &headers, &task.ID, &task.Status, &responseJSON)
 		if err != nil {
 			return nil, err
 		}
@@ -127,8 +124,13 @@ func GetAllTasks(db *sql.DB) ([]model.Task, error) {
 			}
 		}
 
-		tasks = append(tasks, task)
+		if responseJSON.Valid {
+			var responseData model.ResponseData
+			err = json.Unmarshal([]byte(responseJSON.String), &responseData)
+			task.Response = responseData
+		}
 
+		tasks = append(tasks, task)
 	}
 
 	return tasks, nil
@@ -143,21 +145,30 @@ func CleanDB(db *sql.DB) error {
 }
 
 func GetTaskById(db *sql.DB, id int64) (task model.Task, err error) {
-	row := db.QueryRow("SELECT id, method, url, headers, status FROM tasks WHERE id = $1", id)
-	var headersJSON json.RawMessage
-	err = row.Scan(&task.ID, &task.Method, &task.URL, &headersJSON, &task.Status)
+	row := db.QueryRow("SELECT id, method, url, headers, status, response FROM tasks WHERE id = $1", id)
+	var headersJSON, responseJSON sql.NullString
+	err = row.Scan(&task.ID, &task.Method, &task.URL, &headersJSON, &task.Status, &responseJSON)
 	if err != nil {
 		return
 	}
 
-	var headers map[string]string
-	err = json.Unmarshal(headersJSON, &headers)
-	if err != nil {
-		return
+	if headersJSON.Valid {
+		err = json.Unmarshal([]byte(headersJSON.String), &task.Headers)
+		if err != nil {
+			return
+		}
 	}
-	task.Headers = headers
 
-	return task, err
+	if responseJSON.Valid {
+		var responseData model.ResponseData
+		err = json.Unmarshal([]byte(responseJSON.String), &responseData)
+		if err != nil {
+			return
+		}
+		task.Response = responseData
+	}
+
+	return task, nil
 }
 
 func DeleteTaskById(db *sql.DB, id int64) (res sql.Result, err error) {

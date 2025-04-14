@@ -183,3 +183,88 @@
 2025/04/08 11:52:40 Request sending error: Post "https://%D1%83%D1%87%D0%B2%D0%B0%D0%BF%D0%B2%D0%B0%D0%BF%D0%B2%D0%B0%D0%BF.": dial tcp: lookup xn--80aaafbb2gcc5a8b. on 127.0.0.53:53: server misbehaving
 2025/04/08 11:52:40 Task ID 10 status updated to error
 2025/04/08 11:52:40 Error sending task to third-party service: Post "https://%D1%83%D1%87%D0%B2%D0%B0%D0%BF%D0%B2%D0%B0%D0%BF%D0%B2%D0%B0%D0%BF.": dial tcp: lookup xn--80aaafbb2gcc5a8b. on 127.0.0.53:53: server misbehaving
+2025/04/11 14:51:30 Handling tasks
+2025/04/11 14:51:35 Task ID 0 status updated to new
+2025/04/11 14:51:49 Task created successfully with ID 6
+2025/04/11 14:51:50 Task ID 6 status updated to in_process
+2025/04/11 14:51:51 Third-party response for task with ID 6: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 11:51:51 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-7fnf2] Server-Timing:[cache;desc="hit-local", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 00:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 00:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Fri, 11 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 hit, cp3068 pass] X-Cache-Status:[hit-local] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc0004f8c30 -1 [] false true map[] 0xc000b14240 0xc000114630}
+2025/04/11 14:51:51 Task ID 6 status updated to done
+2025/04/11 14:51:54 Error sending task to third-party service: pq: column "response" of relation "tasks" does not exist
+2025/04/11 14:52:20 Handling task with ID 6
+2025/04/11 14:52:20 Task with ID 6 retrieved successfully
+2025/04/11 14:52:26 Handling tasks
+2025/04/11 14:52:26 Error getting tasks from database: pq: column "response" does not exist
+2025/04/11 14:54:01 Handling tasks
+2025/04/11 14:54:10 Error getting tasks from database: pq: column "response" does not exist
+2025/04/11 14:55:12 Handling tasks
+2025/04/11 14:55:12 Database cleaned successfully
+2025/04/11 14:55:18 Handling tasks
+2025/04/11 14:55:21 Task ID 0 status updated to new
+2025/04/11 14:55:21 Task created successfully with ID 7
+2025/04/11 14:55:21 Task ID 7 status updated to in_process
+2025/04/11 14:55:21 Third-party response for task with ID 7: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 11:55:21 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-qthtt] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 00:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 00:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Fri, 11 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc000f2fd40 -1 [] false true map[] 0xc000106360 0xc000fac0b0}
+2025/04/11 14:55:21 Task ID 7 status updated to done
+2025/04/11 14:55:21 Error sending task to third-party service: pq: column "response" of relation "tasks" does not exist
+2025/04/11 14:55:27 Handling tasks
+2025/04/11 14:55:29 Error getting tasks from database: pq: column "response" does not exist
+2025/04/11 15:42:30 Handling tasks
+2025/04/11 15:42:32 Task ID 0 status updated to new
+2025/04/11 15:42:32 Task created successfully with ID 1
+2025/04/11 15:42:32 Task ID 1 status updated to in_process
+2025/04/11 15:42:33 Third-party response for task with ID 1: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[1] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 12:42:33 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-z85m9] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Sat, 12 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc000efb260 -1 [] false true map[] 0xc000ad0240 0xc000124580}
+2025/04/11 15:42:33 Task ID 1 status updated to done
+2025/04/11 15:42:33 Task with ID 1 sent to third-party service successfully
+2025/04/11 15:42:36 Handling tasks
+2025/04/11 15:42:54 Error getting tasks from database: sql: expected 6 destination arguments in Scan, not 5
+2025/04/11 15:43:34 Handling tasks
+2025/04/11 15:43:37 Tasks retrieved successfully. Count: 0
+2025/04/11 15:43:42 Handling tasks
+2025/04/11 15:43:44 Task ID 0 status updated to new
+2025/04/11 15:43:44 Task created successfully with ID 1
+2025/04/11 15:43:44 Task ID 1 status updated to in_process
+2025/04/11 15:43:45 Third-party response for task with ID 1: &{200 OK 200 HTTP/1.1 1 1 map[Cache-Control:[private, max-age=0] Content-Security-Policy-Report-Only:[object-src 'none';base-uri 'self';script-src 'nonce-pdmRsZTpUIVphNUhEUU9gQ' 'strict-dynamic' 'report-sample' 'unsafe-eval' 'unsafe-inline' https: http:;report-uri https://csp.withgoogle.com/csp/gws/other-hp] Content-Type:[text/html; charset=ISO-8859-1] Date:[Fri, 11 Apr 2025 12:43:45 GMT] Expires:[-1] Server:[gws] Set-Cookie:[AEC=AVcja2fUUu5a07xdChgB0SKC1G38yG1fyKyWZ33wCUD0gg2e-vR8Ayr8uA; expires=Wed, 08-Oct-2025 12:43:45 GMT; path=/; domain=.google.com; Secure; HttpOnly; SameSite=lax] X-Frame-Options:[SAMEORIGIN] X-Xss-Protection:[0]] 0xc000b02320 -1 [] false true map[] 0xc000b1e000 <nil>}
+2025/04/11 15:43:45 Task ID 1 status updated to done
+2025/04/11 15:43:45 Task with ID 1 sent to third-party service successfully
+2025/04/11 15:43:48 Handling tasks
+2025/04/11 15:44:00 Error getting tasks from database: sql: Scan error on column index 5, name "response": unsupported Scan, storing driver.Value type []uint8 into type *model.ResponseData
+2025/04/11 15:47:14 Handling tasks
+2025/04/11 15:47:16 Task ID 0 status updated to new
+2025/04/11 15:47:16 Task created successfully with ID 1
+2025/04/11 15:47:16 Task ID 1 status updated to in_process
+2025/04/11 15:47:17 Third-party response for task with ID 1: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 12:47:17 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-95qh7] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Sat, 12 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc00019c030 -1 [] false true map[] 0xc000159680 0xc000ee80b0}
+2025/04/11 15:47:17 Task ID 1 status updated to done
+2025/04/11 15:47:17 Task with ID 1 sent to third-party service successfully
+2025/04/11 15:47:21 Handling tasks
+2025/04/11 15:47:22 Tasks retrieved successfully. Count: 1
+2025/04/11 15:47:32 Handling tasks
+2025/04/11 15:48:57 Handling tasks
+2025/04/11 15:48:58 Task ID 0 status updated to new
+2025/04/11 15:48:58 Task created successfully with ID 1
+2025/04/11 15:48:58 Task ID 1 status updated to in_process
+2025/04/11 15:48:58 Third-party response for task with ID 1: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 12:48:58 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-c2mm2] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Sat, 12 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc000db9f20 -1 [] false true map[] 0xc00057e480 0xc000dd40b0}
+2025/04/11 15:48:58 Task ID 1 status updated to done
+2025/04/11 15:48:58 Task with ID 1 sent to third-party service successfully
+2025/04/11 15:49:00 Handling tasks
+2025/04/11 15:49:01 Tasks retrieved successfully. Count: 1
+2025/04/11 16:23:47 Handling tasks
+2025/04/11 16:23:53 Task ID 0 status updated to new
+2025/04/11 16:23:53 Task created successfully with ID 1
+2025/04/11 16:23:53 Task ID 1 status updated to in_process
+2025/04/11 16:23:54 Third-party response for task with ID 1: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 13:23:54 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-h9bn5] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Sat, 12 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc000ee6630 -1 [] false true map[] 0xc0005665a0 0xc0001146e0}
+2025/04/11 16:23:54 Task ID 1 status updated to done
+2025/04/11 16:23:54 Task with ID 1 sent to third-party service successfully
+2025/04/11 16:23:56 Handling tasks
+2025/04/11 16:23:57 Tasks retrieved successfully. Count: 1
+2025/04/11 16:24:03 Handling task with ID 1
+2025/04/11 16:24:03 Task with ID 1 retrieved successfully
+2025/04/11 16:49:15 Handling tasks
+2025/04/11 16:49:17 Task ID 0 status updated to new
+2025/04/11 16:49:17 Task created successfully with ID 1
+2025/04/11 16:49:17 Task ID 1 status updated to in_process
+2025/04/11 16:49:18 Third-party response for task with ID 1: &{200 OK 200 HTTP/2.0 2 0 map[Accept-Ch:[] Age:[0] Cache-Control:[private, s-maxage=0, max-age=0, must-revalidate, no-transform] Content-Language:[ru] Content-Type:[text/html; charset=UTF-8] Date:[Fri, 11 Apr 2025 13:49:18 GMT] Last-Modified:[Wed, 09 Apr 2025 12:15:08 GMT] Nel:[{ "report_to": "wm_nel", "max_age": 604800, "failure_fraction": 0.05, "success_fraction": 0.0}] Report-To:[{ "group": "wm_nel", "max_age": 604800, "endpoints": [{ "url": "https://intake-logging.wikimedia.org/v1/events?stream=w3c.reportingapi.network_error&schema_uri=/w3c/reportingapi/network_error/1.0.0" }] }] Server:[mw-web.eqiad.main-84b746899f-c2l6z] Server-Timing:[cache;desc="pass", host;desc="cp3068"] Set-Cookie:[WMF-Last-Access=11-Apr-2025;Path=/;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-Last-Access-Global=11-Apr-2025;Path=/;Domain=.wikipedia.org;HttpOnly;secure;Expires=Tue, 13 May 2025 12:00:00 GMT WMF-DP=30a;Path=/;HttpOnly;secure;Expires=Sat, 12 Apr 2025 00:00:00 GMT GeoIP=DE:SN:Falkenstein:50.48:12.36:v4; Path=/; secure; Domain=.wikipedia.org NetworkProbeLimit=0.001;Path=/;Secure;SameSite=Lax;Max-Age=3600] Strict-Transport-Security:[max-age=106384710; includeSubDomains; preload] Vary:[Accept-Encoding,Cookie,Authorization] X-Cache:[cp3068 miss, cp3068 pass] X-Cache-Status:[pass] X-Client-Ip:[167.235.242.39] X-Content-Type-Options:[nosniff]] 0xc000192a80 -1 [] false true map[] 0xc000562480 0xc000114790}
+2025/04/11 16:49:18 Task ID 1 status updated to done
+2025/04/11 16:49:19 Task with ID 1 sent to third-party service successfully
+2025/04/11 16:49:26 Handling tasks
+2025/04/11 16:49:26 Tasks retrieved successfully. Count: 1
+2025/04/11 16:49:32 Handling task with ID 1
+2025/04/11 16:49:32 Task with ID 1 retrieved successfully

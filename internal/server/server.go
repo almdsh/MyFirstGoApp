@@ -88,7 +88,7 @@ func (ctx *AppContext) taskHandler(w http.ResponseWriter, r *http.Request) {
 // @Router /api/v1/task [post]
 // @OperationId createTask
 // @Param task body model.Task true "Task object"
-// @Summary Create new tasks
+// @Summary Create a new task and send it to a third party service
 // @Description Creates a new HTTP task
 // @Accept json
 // @Produce json
