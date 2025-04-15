@@ -5,9 +5,9 @@ import (
 )
 
 func main() {
-	//@title Task celler Server API
+	//@title Task manager Server API
 	//@version 1.0
-	//@description This is a sample server Task celler server.
+	//@description This is a sample server Task manager server.
 
 	//@host localhost:8080
 	//@BasePath /api/v1

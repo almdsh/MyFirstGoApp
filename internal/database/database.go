@@ -28,7 +28,7 @@ func GetEnv(env string, fallback string) string {
 }
 func Run() *sql.DB {
 	config := PostgreSQLConfig{
-		Host:     GetEnv("DB_HOST", "localhost"),
+		Host:     GetEnv("DB_HOST", "db"),
 		Port:     GetEnv("DB_PORT", "5432"),
 		Username: GetEnv("DB_USER", "postgresql"),
 		Password: GetEnv("DB_PASSWORD", "postgresql"),

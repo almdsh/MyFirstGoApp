@@ -1,20 +1,13 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server Todo server.",
-        "title": "Todo Server API",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "email": "alim.dyshekov@axxonsoft.dev"
-        },
-        "license": {
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "description": "This is a sample server Task manager server.",
+        "title": "Task manager Server API",
+        "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/",
+    "basePath": "/api/v1",
     "paths": {
         "/api/v1/task": {
             "post": {
@@ -25,6 +18,10 @@
                 "produces": [
                     "application/json"
                 ],
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Create a new task and send it to a third party service",
                 "parameters": [
                     {
                         "description": "Task object",
@@ -32,7 +29,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/MyFirstGoApp_internal_model.Task"
+                            "$ref": "#/definitions/model.Task"
                         }
                     }
                 ],
@@ -74,7 +71,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/MyFirstGoApp_internal_model.Task"
+                                "$ref": "#/definitions/model.Task"
                             }
                         }
                     },
@@ -122,7 +119,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/MyFirstGoApp_internal_model.Task"
+                            "$ref": "#/definitions/model.Task"
                         }
                     },
                     "404": {
@@ -169,6 +166,11 @@
                     }
                 }
             }
+        }
+    },
+    "definitions": {
+        "model.Task": {
+            "type": "object"
         }
     }
 }

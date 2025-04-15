@@ -31,9 +31,8 @@ func ServerRun() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v1/tasks", ctx.tasksHandler)
 	mux.HandleFunc("/api/v1/tasks/{id}", ctx.taskHandler)
-	mux.HandleFunc("/swagger/", httpSwagger.WrapHandler)
-	//mux.HandleFunc("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/swagger/doc.json")))
-	log.Fatal(http.ListenAndServe("127.0.0.1:8080", mux))
+	mux.HandleFunc("/api/v1/swagger/", httpSwagger.WrapHandler)
+	log.Fatal(http.ListenAndServe("0.0.0.0:8080", mux))
 }
 
 func logSettings() {

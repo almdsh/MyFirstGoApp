@@ -1,14 +1,12 @@
-basePath: /
+basePath: /api/v1
+definitions:
+  model.Task:
+    type: object
 host: localhost:8080
 info:
-  contact:
-    email: alim.dyshekov@axxonsoft.dev
-    name: API Support
-  description: This is a sample server Todo server.
-  license:
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: Todo Server API
+  contact: {}
+  description: This is a sample server Task manager server.
+  title: Task manager Server API
   version: "1.0"
 paths:
   /api/v1/task:
@@ -22,7 +20,7 @@ paths:
         name: task
         required: true
         schema:
-          $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+          $ref: '#/definitions/model.Task'
       produces:
       - application/json
       responses:
@@ -40,6 +38,9 @@ paths:
           description: Internal server error
           schema:
             type: string
+      summary: Create a new task and send it to a third party service
+      tags:
+      - Tasks
   /api/v1/tasks:
     delete:
       description: Deletes all tasks from database
@@ -60,41 +61,13 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+              $ref: '#/definitions/model.Task'
             type: array
         "500":
           description: Internal server error
           schema:
             type: string
       summary: Get all tasks
-    post:
-      consumes:
-      - application/json
-      description: Creates a new HTTP task
-      parameters:
-      - description: Task object
-        in: body
-        name: task
-        required: true
-        schema:
-          $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            additionalProperties:
-              type: integer
-            type: object
-        "400":
-          description: Bad request
-          schema:
-            type: string
-        "500":
-          description: Internal server error
-          schema:
-            type: string
   /api/v1/tasks/{id}:
     delete:
       description: Deletes task by ID
@@ -130,7 +103,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/MyFirstGoApp_internal_model.Task'
+            $ref: '#/definitions/model.Task'
         "404":
           description: Task not found
           schema:
