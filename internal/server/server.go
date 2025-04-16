@@ -14,7 +14,9 @@ import (
 
 	_ "MyFirstGoApp/docs"
 
-	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type AppContext struct {
@@ -28,11 +30,16 @@ func ServerRun() {
 	}
 	logSettings()
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/api/v1/tasks", ctx.tasksHandler)
-	mux.HandleFunc("/api/v1/tasks/{id}", ctx.taskHandler)
-	mux.HandleFunc("/api/v1/swagger/", httpSwagger.WrapHandler)
-	log.Fatal(http.ListenAndServe("0.0.0.0:8080", mux))
+	gin.SetMode(gin.ReleaseMode)
+	router := gin.Default()
+	router.GET("/api/v1/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	router.POST("/api/v1/tasks", ctx.createTask)
+	router.GET("/api/v1/tasks", ctx.getTasks)
+	router.DELETE("/api/v1/tasks", ctx.deleteTasks)
+	router.GET("/api/v1/tasks/:id", ctx.getTaskById)
+	router.DELETE("/api/v1/tasks/:id", ctx.deleteTaskById)
+	router.Run("0.0.0.0:8080")
+
 }
 
 func logSettings() {
@@ -41,46 +48,6 @@ func logSettings() {
 		log.Fatal("Failed to open log-file: ", err)
 	}
 	log.SetOutput(file)
-}
-
-func (ctx *AppContext) tasksHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Handling tasks")
-	db := ctx.DB
-	switch r.Method {
-	case http.MethodPost:
-		createTask(w, r, db)
-
-	case http.MethodGet:
-		getTasks(w, db)
-
-	case http.MethodDelete:
-		deleteTasks(w, db)
-
-	default:
-		http.Error(w, "Invalid request method", http.StatusBadRequest)
-		log.Println("Invalid request method")
-	}
-}
-
-func (ctx *AppContext) taskHandler(w http.ResponseWriter, r *http.Request) {
-	db := ctx.DB
-	idStr := r.PathValue("id")
-	id, err := strconv.ParseInt(idStr, 10, 64)
-	if err != nil {
-		http.Error(w, "ID is not integer!", http.StatusBadRequest)
-		log.Printf("Error parsing ID: %v\n", err)
-		return
-	}
-	log.Printf("Handling task with ID %d\n", id)
-	switch r.Method {
-	case http.MethodGet:
-		getTaskById(w, id, db)
-	case http.MethodDelete:
-		deleteTaskById(w, id, db)
-	default:
-		http.Error(w, "Invalid request method", http.StatusBadRequest)
-		log.Println("Invalid request method")
-	}
 }
 
 // @Tags Tasks
@@ -94,7 +61,10 @@ func (ctx *AppContext) taskHandler(w http.ResponseWriter, r *http.Request) {
 // @Success 201 {object} map[string]int64
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
-func createTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
+func (ctx *AppContext) createTask(c *gin.Context) {
+	r := c.Request
+	w := c.Writer
+	db := ctx.DB
 	task := model.Task{}
 	database.UpdateTaskStatus(db, &task, model.New)
 
@@ -147,7 +117,9 @@ func createTask(w http.ResponseWriter, r *http.Request, db *sql.DB) {
 // @Produce json
 // @Success 200 {array} model.Task
 // @Failure 500 {string} string "Internal server error"
-func getTasks(w http.ResponseWriter, db *sql.DB) {
+func (ctx *AppContext) getTasks(c *gin.Context) {
+	w := c.Writer
+	db := ctx.DB
 	tasks, err := database.GetAllTasks(db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -175,7 +147,9 @@ func getTasks(w http.ResponseWriter, db *sql.DB) {
 // @Description Deletes all tasks from database
 // @Success 204 "No Content"
 // @Failure 500 {string} string "Internal server error"
-func deleteTasks(w http.ResponseWriter, db *sql.DB) {
+func (ctx *AppContext) deleteTasks(c *gin.Context) {
+	w := c.Writer
+	db := ctx.DB
 	err := database.CleanDB(db)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -195,7 +169,17 @@ func deleteTasks(w http.ResponseWriter, db *sql.DB) {
 // @Success 200 {object} model.Task
 // @Failure 404 {string} string "Task not found"
 // @Failure 500 {string} string "Internal server error"
-func getTaskById(w http.ResponseWriter, id int64, db *sql.DB) {
+func (ctx *AppContext) getTaskById(c *gin.Context) {
+	w := c.Writer
+	db := ctx.DB
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, "ID is not integer!", http.StatusBadRequest)
+		log.Printf("Error parsing ID: %v\n", err)
+		return
+	}
+
 	task, err := database.GetTaskById(db, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -222,7 +206,17 @@ func getTaskById(w http.ResponseWriter, id int64, db *sql.DB) {
 // @Success 204 "No Content"
 // @Failure 404 {string} string "Task not found"
 // @Failure 500 {string} string "Internal server error"
-func deleteTaskById(w http.ResponseWriter, id int64, db *sql.DB) {
+func (ctx *AppContext) deleteTaskById(c *gin.Context) {
+	w := c.Writer
+	db := ctx.DB
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, "ID is not integer!", http.StatusBadRequest)
+		log.Printf("Error parsing ID: %v\n", err)
+		return
+	}
+
 	res, err := database.DeleteTaskById(db, id)
 	if err != nil {
 		if err == sql.ErrNoRows {
