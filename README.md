@@ -12,17 +12,16 @@ The project is covered by unit tests.
 
  ## Launching the app
  ### Running in Docker containers
-``shell
- docker-compose up -d
 ```
-
+ docker-compose up -d
+ ```
 ### Local launch
 1. **Install and run PostgreSQL**
-   ```shell
+   ```
    docker run --rm -d -p 5432:5432 -e POSTGRES_PASSWORD=postgresql -e POSTGRES_USER=postgresql -e POSTGRES_DB=postgresql postgres:latest
     ```
 2. **Configure the environment variables:**
-```shell
+```
 export DB_HOST=localhost
 export DB_PORT=5432
 export DB_USER=postgresql
