@@ -2,8 +2,8 @@ package server
 
 import (
 	"MyFirstGoApp/internal/core"
-	"MyFirstGoApp/internal/database"
 	"MyFirstGoApp/internal/model"
+	"MyFirstGoApp/internal/postgres"
 	"database/sql"
 	"log"
 	"net/http"
@@ -28,8 +28,11 @@ func NewHandlers(app *core.App) *Handlers {
 }
 
 func ServerRun() {
-	db := database.Run()
-	app := core.NewApp(db)
+	storage, err := postgres.NewPostgreSQLStorage()
+	if err != nil {
+		log.Fatal(err)
+	}
+	app := core.NewApp(storage)
 	handlers := NewHandlers(app)
 
 	logSettings()
@@ -109,7 +112,7 @@ func (h *Handlers) getTasks(c *gin.Context) {
 // @Success 204 "No Content"
 // @Failure 500 {string} string "Internal server error"
 func (h *Handlers) deleteTasks(c *gin.Context) {
-	err := h.core.DeleteAllTasks()
+	err := h.core.CleanStorage()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -164,19 +167,14 @@ func (h *Handlers) deleteTaskById(c *gin.Context) {
 		return
 	}
 
-	rows, err := h.core.DeleteTaskByID(id)
-	if err != nil {
-		if err == sql.ErrNoRows {
-			c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		}
-		return
-	}
-
-	if rows == 0 {
+	status, err := h.core.DeleteTaskByID(id)
+	switch status {
+	case http.StatusNotFound:
 		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
-		return
+	case http.StatusInternalServerError:
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	default:
+		c.Status(http.StatusNoContent)
 	}
 
 	c.Status(http.StatusNoContent)

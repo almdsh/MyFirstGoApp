@@ -1,22 +1,30 @@
 package client
 
 import (
-	"MyFirstGoApp/internal/database"
 	"MyFirstGoApp/internal/model"
+	"MyFirstGoApp/internal/storage"
 	"bytes"
-	"database/sql"
-	"encoding/json"
 	"io"
 	"log"
 	"net/http"
 )
 
-func SendTask(db *sql.DB, task *model.Task) (*model.ResponseData, error) {
-	database.UpdateTaskStatus(db, task, model.In_process)
+type Client interface {
+	SendTask(store storage.Storage, task *model.Task) (*model.ResponseData, error)
+}
+
+func NewClient() Client {
+	return &HTTPclient{}
+}
+
+type HTTPclient struct{}
+
+func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model.ResponseData, error) {
+	storage.UpdateTaskStatus(task, model.In_process)
 	req, err := http.NewRequest(task.Method, task.URL, bytes.NewBuffer(nil))
 	if err != nil {
 		log.Println("Request creation error: ", err)
-		database.UpdateTaskStatus(db, task, model.Error)
+		storage.UpdateTaskStatus(task, model.Error)
 		return nil, err
 	}
 
@@ -28,12 +36,12 @@ func SendTask(db *sql.DB, task *model.Task) (*model.ResponseData, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Request sending error:", err)
-		database.UpdateTaskStatus(db, task, model.Error)
+		storage.UpdateTaskStatus(task, model.Error)
 		return nil, err
 	}
 	defer resp.Body.Close()
 	log.Printf("Third-party response for task with ID %d: %v\n", task.ID, resp)
-	database.UpdateTaskStatus(db, task, model.Done)
+	storage.UpdateTaskStatus(task, model.Done)
 
 	responseData := &model.ResponseData{
 		Status:        resp.Status,
@@ -48,11 +56,6 @@ func SendTask(db *sql.DB, task *model.Task) (*model.ResponseData, error) {
 	}
 	responseData.Body = string(body)
 
-	responseJSON, err := json.Marshal(responseData)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = db.Exec("UPDATE tasks SET response = $1 WHERE id = $2", string(responseJSON), task.ID)
+	storage.UpdateTaskResponse(task, responseData)
 	return responseData, err
 }

@@ -1,11 +1,13 @@
-package database
+package postgres
 
 import (
 	"MyFirstGoApp/internal/model"
+	"MyFirstGoApp/internal/storage"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
 	_ "github.com/lib/pq"
@@ -19,6 +21,10 @@ type PostgreSQLConfig struct {
 	Database string
 }
 
+type PostgreSQLStorage struct {
+	db *sql.DB
+}
+
 func GetEnv(env string, fallback string) string {
 	value := os.Getenv(env)
 	if len(value) == 0 {
@@ -26,7 +32,8 @@ func GetEnv(env string, fallback string) string {
 	}
 	return value
 }
-func Run() *sql.DB {
+
+func NewPostgreSQLStorage() (storage.Storage, error) {
 	config := PostgreSQLConfig{
 		Host:     GetEnv("DB_HOST", "db"),
 		Port:     GetEnv("DB_PORT", "5432"),
@@ -37,16 +44,16 @@ func Run() *sql.DB {
 
 	db, err := ConnectToDB(config)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err //log.Fatal(err)
 	}
 
 	err = CreateTable(db)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err //log.Fatal(err)
 	}
 
 	log.Println("Connection to PostgreSQL database established successfully!")
-	return db
+	return &PostgreSQLStorage{db: db}, nil
 }
 
 func ConnectToDB(config PostgreSQLConfig) (*sql.DB, error) {
@@ -54,17 +61,17 @@ func ConnectToDB(config PostgreSQLConfig) (*sql.DB, error) {
 		config.Host, config.Port, config.Username, config.Password, config.Database)
 
 	var err error
-	DB, err := sql.Open("postgres", psqlConfig)
+	db, err := sql.Open("postgres", psqlConfig)
 	if err != nil {
 		return nil, err
 	}
 
-	err = DB.Ping()
+	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}
 
-	return DB, nil
+	return db, nil
 }
 
 func CreateTable(db *sql.DB) error {
@@ -84,13 +91,13 @@ func CreateTable(db *sql.DB) error {
 	return err
 }
 
-func AddTask(db *sql.DB, task model.Task) (id int64, err error) {
+func (s *PostgreSQLStorage) AddTask(task model.Task) (id int64, err error) {
 	headersJSON, err := json.Marshal(task.Headers)
 	if err != nil {
 		return 0, err
 	}
 
-	row := db.QueryRow(`
+	row := s.db.QueryRow(`
     INSERT INTO tasks (method, url, headers, status)
     VALUES ($1, $2, $3, $4)
     RETURNING id;
@@ -100,8 +107,8 @@ func AddTask(db *sql.DB, task model.Task) (id int64, err error) {
 	return id, err
 }
 
-func GetAllTasks(db *sql.DB) ([]model.Task, error) {
-	rows, err := db.Query("SELECT method, url, headers, id, status, response FROM tasks")
+func (s *PostgreSQLStorage) GetAllTasks() ([]model.Task, error) {
+	rows, err := s.db.Query("SELECT method, url, headers, id, status, response FROM tasks")
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +133,7 @@ func GetAllTasks(db *sql.DB) ([]model.Task, error) {
 
 		if responseJSON.Valid {
 			var responseData model.ResponseData
-			err = json.Unmarshal([]byte(responseJSON.String), &responseData)
+			json.Unmarshal([]byte(responseJSON.String), &responseData)
 			task.Response = responseData
 		}
 
@@ -137,15 +144,15 @@ func GetAllTasks(db *sql.DB) ([]model.Task, error) {
 
 }
 
-func CleanDB(db *sql.DB) error {
-	_, err := db.Exec(`
+func (s *PostgreSQLStorage) CleanStorage() error {
+	_, err := s.db.Exec(`
 		TRUNCATE tasks CASCADE;
 	`)
 	return err
 }
 
-func GetTaskById(db *sql.DB, id int64) (task model.Task, err error) {
-	row := db.QueryRow("SELECT id, method, url, headers, status, response FROM tasks WHERE id = $1", id)
+func (s *PostgreSQLStorage) GetTaskByID(id int64) (task model.Task, err error) {
+	row := s.db.QueryRow("SELECT id, method, url, headers, status, response FROM tasks WHERE id = $1", id)
 	var headersJSON, responseJSON sql.NullString
 	err = row.Scan(&task.ID, &task.Method, &task.URL, &headersJSON, &task.Status, &responseJSON)
 	if err != nil {
@@ -171,17 +178,43 @@ func GetTaskById(db *sql.DB, id int64) (task model.Task, err error) {
 	return task, nil
 }
 
-func DeleteTaskById(db *sql.DB, id int64) (res sql.Result, err error) {
-	res, err = db.Exec("DELETE FROM tasks WHERE id = $1", id)
-	return
+func (s *PostgreSQLStorage) DeleteTaskByID(id int64) (status int64, err error) {
+	res, _ := s.db.Exec("DELETE FROM tasks WHERE id = $1", id)
+
+	rows, err := res.RowsAffected()
+	if err != nil {
+		if err == sql.ErrNoRows {
+			status = http.StatusNotFound
+		} else {
+			status = http.StatusInternalServerError
+		}
+		return status, err
+	}
+
+	if rows == 0 {
+		status = http.StatusNotFound
+		return status, err
+	}
+
+	return status, err
 }
 
-func UpdateTaskStatus(db *sql.DB, task *model.Task, status string) {
+func (s *PostgreSQLStorage) UpdateTaskStatus(task *model.Task, status string) error {
 	task.Status = status
-	_, err := db.Exec("UPDATE tasks SET status = $1 WHERE id = $2", status, task.ID)
+	_, err := s.db.Exec("UPDATE tasks SET status = $1 WHERE id = $2", status, task.ID)
 	if err != nil {
 		log.Printf("Error updating task status: %v\n", err)
 	} else {
 		log.Printf("Task ID %d status updated to %s\n", task.ID, status)
 	}
+	return err
+}
+
+func (s *PostgreSQLStorage) UpdateTaskResponse(task *model.Task, responseData *model.ResponseData) error {
+	responseJSON, err := json.Marshal(responseData)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec("UPDATE tasks SET response = $1 WHERE id = $2", string(responseJSON), task.ID)
+	return err
 }
