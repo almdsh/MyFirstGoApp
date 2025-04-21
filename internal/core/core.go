@@ -1,7 +1,7 @@
 package core
 
 import (
-	"MyFirstGoApp/internal/client"
+	"MyFirstGoApp/internal/HTTPclient"
 	"MyFirstGoApp/internal/model"
 	"MyFirstGoApp/internal/storage"
 	"log"
@@ -29,7 +29,7 @@ func (a *App) CreateTask(task model.Task) (int64, *model.ResponseData, error) {
 	task.ID = id
 	log.Printf("Task created successfully with ID %d\n", id)
 
-	client := client.NewClient()
+	client := HTTPclient.NewClient()
 	result, err := client.SendTask(a.storage, &task)
 	if err != nil {
 		log.Printf("Error sending task to third-party service: %v\n", err)
