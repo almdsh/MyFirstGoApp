@@ -5,6 +5,7 @@ import (
 	"MyFirstGoApp/internal/model"
 	"MyFirstGoApp/internal/storage"
 	"bytes"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -18,12 +19,19 @@ func NewClient() client.Client {
 type HTTPclient struct{}
 
 func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model.ResponseData, error) {
-	storage.UpdateTaskStatus(task, model.In_process)
+	err := storage.UpdateTaskStatus(task, model.In_process)
+	if err != nil {
+		return nil, fmt.Errorf("error updating the status of tasks to in_progress: %w", err)
+	}
+
 	req, err := http.NewRequest(task.Method, task.URL, bytes.NewBuffer(nil))
 	if err != nil {
 		log.Println("Request creation error: ", err)
-		storage.UpdateTaskStatus(task, model.Error)
-		return nil, err
+		err1 := storage.UpdateTaskStatus(task, model.Error)
+		if err1 != nil {
+			return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
+		}
+		return nil, fmt.Errorf("request creation error: %w", err)
 	}
 
 	for key, value := range task.Headers {
@@ -36,12 +44,18 @@ func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model
 	resp, err := client.Do(req)
 	if err != nil {
 		log.Println("Request sending error:", err)
-		storage.UpdateTaskStatus(task, model.Error)
-		return nil, err
+		err1 := storage.UpdateTaskStatus(task, model.Error)
+		if err1 != nil {
+			return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
+		}
+		return nil, fmt.Errorf("request sending error: %w", err)
 	}
 	defer resp.Body.Close()
 	log.Printf("Third-party response for task with ID %d: %v\n", task.ID, resp)
-	storage.UpdateTaskStatus(task, model.Done)
+	err1 := storage.UpdateTaskStatus(task, model.Error)
+	if err1 != nil {
+		return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
+	}
 
 	responseData := &model.ResponseData{
 		Status:        resp.Status,
@@ -52,15 +66,18 @@ func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("response body reading error: %w", err)
 	}
 	responseData.Body = string(body)
 
 	err = storage.UpdateTaskResponse(task, responseData)
 	if err != nil {
 		log.Printf("Failed to update task response for task with ID %d: %v", task.ID, err)
-		storage.UpdateTaskStatus(task, model.Error)
-		return nil, err
+		err1 := storage.UpdateTaskStatus(task, model.Error)
+		if err1 != nil {
+			return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
+		}
+		return nil, fmt.Errorf("failed to update task response for task with ID %d: %w", task.ID, err)
 	}
 	return responseData, err
 }

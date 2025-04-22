@@ -78,6 +78,9 @@ func CreateTable(db *sql.DB) error {
 	_, err := db.Exec(`
         DROP TABLE IF EXISTS tasks CASCADE;
     `)
+	if err != nil {
+		return fmt.Errorf("failed to drop table 'tasks': %w", err)
+	}
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS tasks (
             id SERIAL PRIMARY KEY,
@@ -88,6 +91,9 @@ func CreateTable(db *sql.DB) error {
             response JSONB
         );
     `)
+	if err != nil {
+		return fmt.Errorf("failed to create table 'tasks': %w", err)
+	}
 	return err
 }
 
@@ -203,7 +209,7 @@ func (s *PostgreSQLStorage) UpdateTaskStatus(task *model.Task, status string) er
 	task.Status = status
 	_, err := s.db.Exec("UPDATE tasks SET status = $1 WHERE id = $2", status, task.ID)
 	if err != nil {
-		log.Printf("Error updating task status: %v\n", err)
+		return fmt.Errorf("error updating task status: %w", err)
 	} else {
 		log.Printf("Task ID %d status updated to %s\n", task.ID, status)
 	}
