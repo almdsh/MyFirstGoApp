@@ -33,6 +33,7 @@ func ServerRun() {
 		log.Fatal(err)
 	}
 	app := core.NewApp(storage)
+	app.Initworkers(100)
 	handlers := NewHandlers(app)
 
 	logSettings()
@@ -70,21 +71,21 @@ func logSettings() {
 // @Failure 400 {string} string "Bad request"
 // @Failure 500 {string} string "Internal server error"
 func (h *Handlers) createTask(c *gin.Context) {
+	log.Println("Это реально новый код!")
 	var task model.Task
 	if err := c.ShouldBindJSON(&task); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	id, result, err := h.core.CreateTask(task)
+	id, err := h.core.CreateTask(task)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"id":       id,
-		"response": result,
+		"id": id,
 	})
 }
 

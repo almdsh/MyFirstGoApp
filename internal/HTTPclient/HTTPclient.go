@@ -52,10 +52,6 @@ func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model
 	}
 	defer resp.Body.Close()
 	log.Printf("Third-party response for task with ID %d: %v\n", task.ID, resp)
-	err1 := storage.UpdateTaskStatus(task, model.Error)
-	if err1 != nil {
-		return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
-	}
 
 	responseData := &model.ResponseData{
 		Status:        resp.Status,
@@ -78,6 +74,10 @@ func (c *HTTPclient) SendTask(storage storage.Storage, task *model.Task) (*model
 			return nil, fmt.Errorf("error updating the status of tasks to error: %w", err1)
 		}
 		return nil, fmt.Errorf("failed to update task response for task with ID %d: %w", task.ID, err)
+	}
+	err1 := storage.UpdateTaskStatus(task, model.Done)
+	if err1 != nil {
+		return nil, fmt.Errorf("error updating the status of tasks to done: %w", err1)
 	}
 	return responseData, err
 }
