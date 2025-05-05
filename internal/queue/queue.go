@@ -2,15 +2,22 @@ package queue
 
 import (
 	"MyFirstGoApp/internal/model"
-	"sync"
 )
+
+type TaskQueue interface {
+	Enqueque(task model.Task)
+	Dequeque() model.Task
+	Start(num int, process func(model.Task))
+	IsEmpty() bool
+	Size() int
+	Close()
+}
 
 type TasksQueue struct {
 	tasks chan model.Task
-	wg    sync.WaitGroup
 }
 
-func NewTasksQueue(size int) *TasksQueue {
+func NewTasksQueue(size int) TaskQueue {
 	return &TasksQueue{
 		tasks: make(chan model.Task, size),
 	}
@@ -26,9 +33,7 @@ func (q *TasksQueue) Dequeque() model.Task {
 
 func (q *TasksQueue) Start(num int, process func(model.Task)) {
 	for i := 0; i < num; i++ {
-		q.wg.Add(1)
 		go func() {
-			defer q.wg.Done()
 			for task := range q.tasks {
 				process(task)
 			}
@@ -45,5 +50,4 @@ func (q *TasksQueue) Size() int {
 }
 func (q *TasksQueue) Close() {
 	close(q.tasks)
-	q.wg.Wait()
 }
