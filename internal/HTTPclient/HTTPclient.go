@@ -12,10 +12,16 @@ import (
 )
 
 func NewClient() client.Client {
-	return &HTTPclient{}
+	return &HTTPclient{
+		client: &http.Client{
+			Timeout: 10 * time.Second,
+		},
+	}
 }
 
-type HTTPclient struct{}
+type HTTPclient struct {
+	client *http.Client
+}
 
 func (c *HTTPclient) SendTask(task *model.Task) (*model.ResponseData, error) {
 
@@ -29,10 +35,7 @@ func (c *HTTPclient) SendTask(task *model.Task) (*model.ResponseData, error) {
 		req.Header.Set(key, value)
 	}
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-	resp, err := client.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		log.Println("Request sending error:", err)
 		return nil, fmt.Errorf("request sending error: %w", err)

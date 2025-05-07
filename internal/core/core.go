@@ -52,13 +52,13 @@ func (a *App) Initworkers(num int) {
 func (a *App) CreateTask(task model.Task) (int64, error) {
 	err := a.storage.UpdateTaskStatus(&task, model.New)
 	if err != nil {
-		return -1, fmt.Errorf("error updating the status of tasks to new: %w", err)
+		return 0, fmt.Errorf("error updating the status of tasks to new: %w", err)
 	}
 
 	id, err := a.storage.AddTask(task)
 	if err != nil {
 		log.Printf("Error adding task to database: %v\n", err)
-		return -1, fmt.Errorf("adding task to database error: %w", err)
+		return 0, fmt.Errorf("adding task to database error: %w", err)
 	}
 
 	task.ID = id
